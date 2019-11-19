@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.jensomato.sample">
 
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
     <application
         android:name=".JsonPlaceholderSampleApplication"
         android:allowBackup="true"
@@ -10,6 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".ui.PostsActivity"
+            android:label="@string/title_activity_posts"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
