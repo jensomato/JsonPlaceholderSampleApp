@@ -2,6 +2,7 @@ package de.jensomato.sample.data
 
 import de.jensomato.sample.appModule
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -45,5 +46,16 @@ class JsonPlaceholderServiceTest: KoinTest {
 
         assertTrue(comments.isNotEmpty())
         assertTrue(comments.all { it.postId == 1L })
+    }
+
+    @Test
+    fun getPost() {
+        val response = apiService.getPost(1L).execute()
+
+        assertTrue(response.isSuccessful)
+
+        val post = response.body()
+
+        assertEquals(1L, post!!.id)
     }
 }

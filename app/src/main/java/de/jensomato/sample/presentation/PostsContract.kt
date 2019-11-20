@@ -7,6 +7,7 @@ object PostsContract {
     interface View: CoroutineScope {
         fun displayPosts(posts: List<PostViewModel>)
         fun displayError()
+        fun navigateToComments(postId: Long)
 
         companion object {
             const val USER_ID = "userId"
@@ -16,5 +17,6 @@ object PostsContract {
     interface Presenter {
         fun loadPosts(userId: Long)
         fun toggleFavoriteState(post: PostViewModel)
+        fun selectPost(post: PostViewModel)
     }
 }

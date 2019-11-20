@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">JsonPlaceholderSampleApp</string>
     <string name="title_activity_posts">My Posts</string>
+    <string name="title_activity_comments">Comments</string>
 </resources>

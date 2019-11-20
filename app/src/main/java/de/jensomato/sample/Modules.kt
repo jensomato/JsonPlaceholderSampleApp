@@ -1,9 +1,7 @@
 package de.jensomato.sample
 
 import de.jensomato.sample.data.JsonPlaceholderService
-import de.jensomato.sample.presentation.CoroutineContextProvider
-import de.jensomato.sample.presentation.PostsContract
-import de.jensomato.sample.presentation.PostsPresenter
+import de.jensomato.sample.presentation.*
 import de.jensomato.sample.respository.*
 import kotlinx.coroutines.Dispatchers
 import org.koin.dsl.module
@@ -36,5 +34,7 @@ val appModule = module {
     } }
 
     factory<PostsContract.Presenter> { (view: PostsContract.View) -> PostsPresenter(get(), get(), get(), view) }
+
+    factory<CommentsContract.Presenter> { (view: CommentsContract.View) -> CommentsPresenter(get(), get(), get(), get(), view) }
 
 }

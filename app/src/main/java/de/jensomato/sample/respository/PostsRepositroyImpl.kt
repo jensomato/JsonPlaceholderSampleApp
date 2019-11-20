@@ -18,4 +18,18 @@ class PostsRepositroyImpl(val service: JsonPlaceholderService): PostsRepository 
             Result.error(ex)
         }
     }
+
+    override fun getPost(postId: Long): Result<PostModel, Exception> {
+        return try {
+            service.getPost(postId).execute().let {
+                if (it.isSuccessful) {
+                    it.body()?.let { post -> Result.success(post) } ?: Result.error(RuntimeException("Post with id=$postId not found"))
+                } else {
+                    Result.error(RuntimeException("Error loading post for postId=$postId"))
+                }
+            }
+        } catch (ex: Exception) {
+            Result.error(ex)
+        }
+    }
 }

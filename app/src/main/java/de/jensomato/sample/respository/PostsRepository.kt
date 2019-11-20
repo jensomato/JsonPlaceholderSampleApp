@@ -5,4 +5,5 @@ import de.jensomato.sample.data.model.PostModel
 
 interface PostsRepository {
     fun listPostsByUserId(userId: Long): Result<List<PostModel>, Exception>
+    fun getPost(postId: Long): Result<PostModel, Exception>
 }

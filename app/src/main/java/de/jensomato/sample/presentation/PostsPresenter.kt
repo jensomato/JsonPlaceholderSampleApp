@@ -46,6 +46,9 @@ class PostsPresenter(
                     view.displayError()
                 })
         }
+    }
 
+    override fun selectPost(post: PostViewModel) {
+        view.navigateToComments(post.id)
     }
 }

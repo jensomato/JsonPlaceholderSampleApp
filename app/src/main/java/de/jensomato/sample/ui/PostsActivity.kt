@@ -1,11 +1,15 @@
 package de.jensomato.sample.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.jensomato.sample.R
+import de.jensomato.sample.presentation.CommentsContract
+import de.jensomato.sample.presentation.CommentsContract.View.Companion.POST_ID
 import de.jensomato.sample.presentation.PostsContract
 import de.jensomato.sample.presentation.PostsContract.View.Companion.USER_ID
 import de.jensomato.sample.ui.model.PostViewModel
@@ -13,6 +17,7 @@ import de.jensomato.sample.ui.model.PostViewModel
 import kotlinx.android.synthetic.main.activity_posts.*
 import kotlinx.android.synthetic.main.content_posts.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.selects.select
 import org.koin.android.ext.android.inject
 import org.koin.core.KoinComponent
 import org.koin.core.parameter.parametersOf
@@ -37,16 +42,22 @@ class PostsActivity : AppCompatActivity(), PostsContract.View, KoinComponent, Co
         viewManager = LinearLayoutManager(this)
         viewAdapter = PostsAdapter()
         viewAdapter.onFavoriteClickListener = ::updatePost
+        viewAdapter.onPostClickListener = ::selectPost
 
         postsRecyclerView.apply {
             layoutManager = viewManager
             adapter = viewAdapter
+            addItemDecoration(DividerItemDecoration(this@PostsActivity, LinearLayoutManager.VERTICAL))
         }
 
     }
 
     private fun updatePost(post: PostViewModel) {
         postsPresenter.toggleFavoriteState(post)
+    }
+
+    private fun selectPost(post: PostViewModel) {
+        postsPresenter.selectPost(post)
     }
 
     override fun onStart() {
@@ -67,5 +78,12 @@ class PostsActivity : AppCompatActivity(), PostsContract.View, KoinComponent, Co
 
     override fun displayError() {
         Toast.makeText(this, "display error", Toast.LENGTH_LONG).show()
+    }
+
+    override fun navigateToComments(postId: Long) {
+        val intent = Intent(this, CommentsActivity::class.java).apply {
+            putExtra(POST_ID, postId)
+        }
+        startActivity(intent)
     }
 }

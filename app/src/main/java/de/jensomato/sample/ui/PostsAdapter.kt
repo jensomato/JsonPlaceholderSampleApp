@@ -14,11 +14,15 @@ class PostsAdapter :
 
     var posts = listOf<PostViewModel>()
     var onFavoriteClickListener: ((PostViewModel) -> Unit)? = null
+    var onPostClickListener: ((PostViewModel) -> Unit)? = null
 
-    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var title: TextView = view.findViewById(R.id.title)
-        var body: TextView = view.findViewById(R.id.body)
+    inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        var title: TextView = view.findViewById(R.id.postTitle)
+        var body: TextView = view.findViewById(R.id.postBody)
         var button: ImageButton = view.findViewById(R.id.favoriteButton)
+        fun setClickListener(post: PostViewModel) {
+            itemView.setOnClickListener { onPostClickListener?.invoke(post) }
+        }
     }
 
 
@@ -41,6 +45,7 @@ class PostsAdapter :
         holder.button.setOnClickListener {
             onFavoriteClickListener?.invoke(post)
         }
+        holder.setClickListener(post)
     }
 
     override fun getItemCount() = posts.size
