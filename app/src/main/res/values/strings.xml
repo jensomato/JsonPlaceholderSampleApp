@@ -2,4 +2,6 @@
     <string name="app_name">JsonPlaceholderSampleApp</string>
     <string name="title_activity_posts">My Posts</string>
     <string name="title_activity_comments">Comments</string>
+    <string name="button_login_activity">Login</string>
+    <string name="caption_login_activity">UserId</string>
 </resources>

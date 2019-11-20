@@ -37,4 +37,6 @@ val appModule = module {
 
     factory<CommentsContract.Presenter> { (view: CommentsContract.View) -> CommentsPresenter(get(), get(), get(), get(), view) }
 
+    factory<LoginContract.Presenter> { (view: LoginContract.View) -> LoginPresenter(get(), get(), view) }
+
 }
