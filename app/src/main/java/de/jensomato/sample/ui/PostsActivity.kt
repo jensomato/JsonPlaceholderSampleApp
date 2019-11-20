@@ -8,16 +8,15 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.jensomato.sample.R
-import de.jensomato.sample.presentation.CommentsContract
 import de.jensomato.sample.presentation.CommentsContract.View.Companion.POST_ID
 import de.jensomato.sample.presentation.PostsContract
 import de.jensomato.sample.presentation.PostsContract.View.Companion.USER_ID
 import de.jensomato.sample.ui.model.PostViewModel
+import de.jensomato.sample.ui.model.PostsViewModel
 
 import kotlinx.android.synthetic.main.activity_posts.*
 import kotlinx.android.synthetic.main.content_posts.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.selects.select
 import org.koin.android.ext.android.inject
 import org.koin.core.KoinComponent
 import org.koin.core.parameter.parametersOf
@@ -50,6 +49,16 @@ class PostsActivity : AppCompatActivity(), PostsContract.View, KoinComponent, Co
             addItemDecoration(DividerItemDecoration(this@PostsActivity, LinearLayoutManager.VERTICAL))
         }
 
+        val userId = intent.getLongExtra(USER_ID, 1L)
+
+        buttonFilterFavs.setOnClickListener {
+            postsPresenter.loadPosts(userId, false)
+        }
+
+        buttonFilterAll.setOnClickListener {
+            postsPresenter.loadPosts(userId)
+        }
+
     }
 
     private fun updatePost(post: PostViewModel) {
@@ -71,9 +80,11 @@ class PostsActivity : AppCompatActivity(), PostsContract.View, KoinComponent, Co
         job.cancelChildren()
     }
 
-    override fun displayPosts(posts: List<PostViewModel>) {
-        viewAdapter.posts = posts
+    override fun displayPosts(viewModel: PostsViewModel) {
+        viewAdapter.posts = viewModel.posts
         viewAdapter.notifyDataSetChanged()
+        buttonFilterAll.isEnabled = viewModel.isShowFavsOnly
+        buttonFilterFavs.isEnabled = viewModel.isShowFavsOnly.not()
     }
 
     override fun displayError() {

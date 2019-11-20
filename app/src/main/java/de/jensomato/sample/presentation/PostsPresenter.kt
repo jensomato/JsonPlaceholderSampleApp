@@ -1,8 +1,12 @@
 package de.jensomato.sample.presentation
 
+import com.github.kittinunf.result.Result
+import com.github.kittinunf.result.flatMap
+import com.github.kittinunf.result.map
 import de.jensomato.sample.respository.FavoritesRepository
 import de.jensomato.sample.respository.PostsRepository
 import de.jensomato.sample.ui.model.PostViewModel
+import de.jensomato.sample.ui.model.PostsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -15,17 +19,25 @@ class PostsPresenter(
     val coroutineScope: CoroutineScope = view
 ): PostsContract.Presenter {
 
-    override fun loadPosts(userId: Long) {
+    override fun loadPosts(userId: Long, showAll: Boolean) {
         coroutineScope.launch {
             val response = withContext(coroutineContextProvider.io) {
-                postsRepository.listPostsByUserId(userId)
+                postsRepository.listPostsByUserId(userId).flatMap {list ->
+                    Result.of(list.map {post ->
+                        favoritesRepository.isFavorite(post.id).map { isFavorite ->
+                            PostViewModel(post.id, post.title, post.body, isFavorite, post.userId)
+                        }
+                    }.map { result ->
+                        result.get()
+                    }.filter { viewModel ->
+                        showAll || viewModel.favorite
+                    })
+                }
             }
 
             response.fold(
                 success = {
-                    view.displayPosts(it.map { post ->
-                        PostViewModel(post.id, post.title, post.body, favoritesRepository.isFavorite(post.id).get(), post.userId)
-                    })
+                    view.displayPosts(PostsViewModel(it, showAll.not()))
                 },
                 failure = {
                     view.displayError()
